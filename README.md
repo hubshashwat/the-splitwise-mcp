@@ -155,7 +155,8 @@ Add to your config:
 {
   "mcpServers": {
     "splitwise": {
-      "command": "splitwise-mcp",
+      "command": "python",
+      "args": ["-m", "splitwise_mcp.server"],
       "env": {
         "SPLITWISE_CONSUMER_KEY": "your_consumer_key",
         "SPLITWISE_CONSUMER_SECRET": "your_consumer_secret",
@@ -167,6 +168,8 @@ Add to your config:
   }
 }
 ```
+
+> **Note**: If `splitwise-mcp` console command is available, you can use `"command": "splitwise-mcp"` without args instead.
 
 Then in Claude: *"Add an expense of $50 with John for dinner"*
 
@@ -182,7 +185,8 @@ Add to your MCP settings (`.vscode/settings.json` or Cursor settings):
 {
   "mcp.servers": {
     "splitwise": {
-      "command": "splitwise-mcp",
+      "command": "python",
+      "args": ["-m", "splitwise_mcp.server"],
       "env": {
         "SPLITWISE_CONSUMER_KEY": "your_consumer_key",
         "SPLITWISE_CONSUMER_SECRET": "your_consumer_secret",
