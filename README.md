@@ -155,7 +155,7 @@ Add to your config:
 {
   "mcpServers": {
     "splitwise": {
-      "command": "python",
+      "command": "full path of python",
       "args": ["-m", "splitwise_mcp.server"],
       "env": {
         "SPLITWISE_CONSUMER_KEY": "your_consumer_key",
@@ -185,7 +185,7 @@ Add to your MCP settings (`.vscode/settings.json` or Cursor settings):
 {
   "mcp.servers": {
     "splitwise": {
-      "command": "python",
+      "command": "full path of python",
       "args": ["-m", "splitwise_mcp.server"],
       "env": {
         "SPLITWISE_CONSUMER_KEY": "your_consumer_key",
