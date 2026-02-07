@@ -65,17 +65,30 @@ pip install splitwise-mcp
 
 ### Configuration
 
-You'll need API keys from three services:
+You'll need API keys depending on which features you want:
+
+#### Required (Core Splitwise Features)
 
 1. **Splitwise API Keys** (https://secure.splitwise.com/apps/new)
    - Register a new application
    - Get: Consumer Key, Consumer Secret, and API Key
+   - **Required for**: `add_expense`, `list_friends`, `delete_expense`
 
-2. **Gemini API Key** (https://aistudio.google.com/)
+#### Optional (AI Features)
+
+2. **Gemini API Key** (https://aistudio.google.com/) - *Optional*
    - Create API key (free tier available)
+   - **Model**: Uses Gemini 2.0 Flash - ensure your API key has access to this model
+   - **Required for**: `text_command` (natural language processing)
 
-3. **Deepgram API Key** (https://console.deepgram.com/)
+3. **Deepgram API Key** (https://console.deepgram.com/) - *Optional*
    - Sign up and get API key (free tier available)
+   - **Required for**: `voice_command` (audio transcription)
+
+**Summary**:
+- **Text-only users**: Need Splitwise + Gemini keys (skip Deepgram)
+- **Voice users**: Need all 5 keys
+- **Basic API users**: Only need 3 Splitwise keys
 
 **Set environment variables** in your shell or add to your Claude Desktop config (see below).
 
