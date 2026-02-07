@@ -40,8 +40,8 @@ flowchart LR
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/splitwise-mcp.git
-   cd splitwise-mcp
+   git clone https://github.com/hubshashwat/the-splitwise-mcp.git
+   cd the-splitwise-mcp
    ```
 
 2. **Create and activate a virtual environment**:
