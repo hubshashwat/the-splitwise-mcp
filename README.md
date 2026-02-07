@@ -128,9 +128,13 @@ Proceed? (yes/edit/cancel): yes
 ✅ Expense added!
 ```
 
-### Option B: With Claude Desktop 💬
+### Option B: With MCP Clients 💬
 
-Add to your Claude Desktop config:
+This server uses **stdio transport** and works with **all MCP-compatible clients**:
+
+#### Claude Desktop
+
+Add to your config:
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
@@ -151,25 +155,44 @@ Add to your Claude Desktop config:
 }
 ```
 
-**Note**: If you installed from source, use the full path instead:
-- **macOS/Linux**: `"/path/to/the-splitwise-mcp/.venv/bin/splitwise-mcp"`
-- **Windows**: `"C:\\path\\to\\the-splitwise-mcp\\.venv\\Scripts\\splitwise-mcp.exe"`
+Then in Claude: *"Add an expense of $50 with John for dinner"*
 
-Then in Claude: *"Add an expense of 50 with Sumeet for dinner"*
+#### Claude CLI
 
-### With Cursor
+Use the same config format with `claude-cli --mcp-config`.
 
-Add to Cursor's MCP settings with the same command path.
+#### Cursor / VS Code (Antigravity, Cline, Continue.dev)
 
-### Terminal Agent (Optional)
+Add to your MCP settings (`.vscode/settings.json` or Cursor settings):
 
-For direct voice testing without an MCP client:
-
-```bash
-.venv/bin/python run_agent.py
+```json
+{
+  "mcp.servers": {
+    "splitwise": {
+      "command": "splitwise-mcp",
+      "env": {
+        "SPLITWISE_CONSUMER_KEY": "your_consumer_key",
+        "SPLITWISE_CONSUMER_SECRET": "your_consumer_secret",
+        "SPLITWISE_API_KEY": "your_api_key",
+        "GEMINI_API_KEY": "your_gemini_key",
+        "DEEPGRAM_API_KEY": "your_deepgram_key"
+      }
+    }
+  }
+}
 ```
 
-Commands: `v` (voice), `t` (text), `q` (quit)
+Then you can ask your AI assistant: *"Use Splitwise to add an expense..."*
+
+#### Other MCP Clients
+
+This server is compatible with any MCP client supporting stdio transport. Use the same configuration pattern.
+
+---
+
+**Note**: If you installed from source instead of pip, use the full path to the executable:
+- **macOS/Linux**: `"/path/to/the-splitwise-mcp/.venv/bin/splitwise-mcp"`
+- **Windows**: `"C:\\path\\to\\the-splitwise-mcp\\.venv\\Scripts\\splitwise-mcp.exe"`
 
 ### Remote Access (SSE)
 
