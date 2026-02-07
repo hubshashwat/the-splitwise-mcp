@@ -1,0 +1,29 @@
+[project]
+name = "splitwise-mcp"
+version = "0.1.0"
+description = "MCP server for Splitwise integration"
+authors = [
+    {name = "User", email = "user@example.com"},
+]
+dependencies = [
+    "mcp[cli]>=0.1.0",
+    "splitwise>=3.0.0",
+    "python-dotenv>=1.0.0",
+    "google-genai>=0.1.0",
+    "sounddevice>=0.4.6",
+    "numpy>=1.26.0",
+    "scipy>=1.11.0",
+    "colorama>=0.4.6",  # For pretty output
+    "deepgram-sdk>=3.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+    "streamlit>=1.30.0",
+]
+requires-python = ">=3.10"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+splitwise-mcp = "splitwise_mcp.server:main"

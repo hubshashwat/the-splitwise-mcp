@@ -1,0 +1,22 @@
+startCommand:
+  type: stdio
+  command: "python"
+  args:
+    - "-m"
+    - "splitwise_mcp.server"
+environmentVariables:
+  SPLITWISE_CONSUMER_KEY:
+    description: "Your Splitwise Consumer Key (from https://secure.splitwise.com/apps/new)"
+    required: true
+  SPLITWISE_CONSUMER_SECRET:
+    description: "Your Splitwise Consumer Secret"
+    required: true
+  SPLITWISE_API_KEY:
+    description: "Your Splitwise API Key"
+    required: true
+  GEMINI_API_KEY:
+    description: "Your Google Gemini API Key (get it from https://aistudio.google.com/)"
+    required: true
+  DEEPGRAM_API_KEY:
+    description: "Your Deepgram API Key (get it from https://console.deepgram.com/)"
+    required: true
