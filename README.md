@@ -81,7 +81,54 @@ You'll need API keys from three services:
 
 ## Usage
 
-### With Claude Desktop
+You can use this server in **two ways**:
+
+### Option A: Standalone Terminal Agent (No Claude Required!) 🖥️
+
+Run the voice/text agent directly in your terminal:
+
+```bash
+# Install the package
+pip install splitwise-mcp
+
+# Download the agent script
+curl -O https://raw.githubusercontent.com/hubshashwat/the-splitwise-mcp/main/run_agent.py
+
+# Set environment variables
+export SPLITWISE_CONSUMER_KEY="your_key"
+export SPLITWISE_CONSUMER_SECRET="your_secret"  
+export SPLITWISE_API_KEY="your_api_key"
+export GEMINI_API_KEY="your_gemini_key"
+export DEEPGRAM_API_KEY="your_deepgram_key"
+
+# Run the agent
+python run_agent.py
+```
+
+**Commands:**
+- `v` or `voice` - Record 10 seconds of audio and process it
+- `t` or `text` - Type your command
+- `q` or `quit` - Exit
+
+**Example session:**
+```
+🤖 Splitwise Voice Agent
+Enter command (voice/text/quit): t
+Enter request: Add expense of $50 with John for dinner
+
+⚠️  Proposed Action:
+   Function: add_expense
+   Args: {
+     "description": "dinner",
+     "cost": 50.0,
+     "split_with": ["John"]
+   }
+
+Proceed? (yes/edit/cancel): yes
+✅ Expense added!
+```
+
+### Option B: With Claude Desktop 💬
 
 Add to your Claude Desktop config:
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
