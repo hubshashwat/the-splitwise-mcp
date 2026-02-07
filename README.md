@@ -1,7 +1,7 @@
 # Splitwise MCP Server
 
 [![MCP](https://img.shields.io/badge/MCP-Enabled-blue)](https://modelcontextprotocol.io)
-[![Smithery](https://smithery.ai/badge/splitwise-mcp)](https://smithery.ai/server/splitwise-mcp)
+[![PyPI](https://img.shields.io/pypi/v/splitwise-mcp)](https://pypi.org/project/splitwise-mcp/)
 
 A Model Context Protocol (MCP) server that integrates with [Splitwise](https://splitwise.com). Connect your AI assistant (Claude, Cursor, etc.) to manage Splitwise expenses using natural language — with voice support!
 
@@ -38,6 +38,14 @@ flowchart LR
 
 ## Installation
 
+### Option 1: Install from PyPI (Recommended)
+
+```bash
+pip install splitwise-mcp
+```
+
+### Option 2: Install from Source
+
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/hubshashwat/the-splitwise-mcp.git
@@ -55,7 +63,9 @@ flowchart LR
    pip install -e .
    ```
 
-4. **Configure API keys** — copy `.env.example` to `.env`:
+### Configuration
+
+**Configure API keys** — copy `.env.example` to `.env`:
    ```bash
    cp .env.example .env
    ```
