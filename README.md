@@ -65,35 +65,48 @@ pip install splitwise-mcp
 
 ### Configuration
 
-**Configure API keys** — copy `.env.example` to `.env`:
-   ```bash
-   cp .env.example .env
-   ```
+You'll need API keys from three services:
 
-   Then edit `.env` with your keys:
-   ```bash
-   SPLITWISE_CONSUMER_KEY=...  # From Splitwise (https://secure.splitwise.com/apps/new)
-   SPLITWISE_CONSUMER_SECRET=... # From Splitwise
-   SPLITWISE_API_KEY=...       # From Splitwise
-   GEMINI_API_KEY=...          # From Google AI Studio
-   DEEPGRAM_API_KEY=...        # From Deepgram Console
-   ```
+1. **Splitwise API Keys** (https://secure.splitwise.com/apps/new)
+   - Register a new application
+   - Get: Consumer Key, Consumer Secret, and API Key
+
+2. **Gemini API Key** (https://aistudio.google.com/)
+   - Create API key (free tier available)
+
+3. **Deepgram API Key** (https://console.deepgram.com/)
+   - Sign up and get API key (free tier available)
+
+**Set environment variables** in your shell or add to your Claude Desktop config (see below).
 
 ## Usage
 
 ### With Claude Desktop
 
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Add to your Claude Desktop config:
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
     "splitwise": {
-      "command": "/path/to/splitwise-mcp/.venv/bin/splitwise-mcp"
+      "command": "splitwise-mcp",
+      "env": {
+        "SPLITWISE_CONSUMER_KEY": "your_consumer_key",
+        "SPLITWISE_CONSUMER_SECRET": "your_consumer_secret",
+        "SPLITWISE_API_KEY": "your_api_key",
+        "GEMINI_API_KEY": "your_gemini_key",
+        "DEEPGRAM_API_KEY": "your_deepgram_key"
+      }
     }
   }
 }
 ```
+
+**Note**: If you installed from source, use the full path instead:
+- **macOS/Linux**: `"/path/to/the-splitwise-mcp/.venv/bin/splitwise-mcp"`
+- **Windows**: `"C:\\path\\to\\the-splitwise-mcp\\.venv\\Scripts\\splitwise-mcp.exe"`
 
 Then in Claude: *"Add an expense of 50 with Sumeet for dinner"*
 
