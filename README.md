@@ -78,7 +78,7 @@ You'll need API keys depending on which features you want:
 
 2. **Gemini API Key** (https://aistudio.google.com/) - *Optional*
    - Create API key (free tier available)
-   - **Model**: Uses Gemini 2.0 Flash - ensure your API key has access to this model
+   - **Model**: Uses Gemini 3.0 Flash - ensure your API key has access to this model
    - **Required for**: `text_command` (natural language processing)
 
 3. **Deepgram API Key** (https://console.deepgram.com/) - *Optional*
