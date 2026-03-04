@@ -93,7 +93,7 @@ class TestSplitwiseLogic(unittest.TestCase):
         self.assertEqual(u_me.getOwedShare(), "35.00")
 
         self.assertEqual(u_sumeet.getId(), 101)
-        self.assertEqual(u_sumeet.getPaidShare(), "0.0")
+        self.assertEqual(u_sumeet.getPaidShare(), "0.00")
         self.assertEqual(u_sumeet.getOwedShare(), "35.00")
 
     def test_add_expense_unequal_split(self):
@@ -169,6 +169,67 @@ class TestSplitwiseLogic(unittest.TestCase):
         self.mock_client.createExpense.assert_called_once()
         self.assertEqual(expense.getGroupId(), 500)
         self.assertEqual(expense.getDescription(), "Rent")
+
+    def test_search_expenses_query_filter(self):
+        e1 = MagicMock()
+        e1.getId.return_value = 1
+        e1.getDescription.return_value = "Zomato dinner"
+        e1.getCategory.return_value = {"name": "Food"}
+        e1.getCurrencyCode.return_value = "INR"
+        e1.getCost.return_value = "560.00"
+        e1.getDate.return_value = "2026-03-01T12:00:00Z"
+        e1.getGroupId.return_value = 500
+        e1.getDetails.return_value = ""
+
+        e2 = MagicMock()
+        e2.getId.return_value = 2
+        e2.getDescription.return_value = "Uber ride"
+        e2.getCategory.return_value = {"name": "Transport"}
+        e2.getCurrencyCode.return_value = "INR"
+        e2.getCost.return_value = "220.00"
+        e2.getDate.return_value = "2026-03-02T12:00:00Z"
+        e2.getGroupId.return_value = 500
+        e2.getDetails.return_value = ""
+
+        # First page has data, second is empty -> pagination stop.
+        self.mock_client.getExpenses.side_effect = [[e1, e2], []]
+
+        result = self.client_wrapper.search_expenses(days=90, query="zomato")
+
+        self.assertEqual(result["fetched_count"], 2)
+        self.assertEqual(result["matched_count"], 1)
+        self.assertEqual(result["expenses"][0]["id"], "1")
+        self.assertEqual(result["expenses"][0]["description"], "Zomato dinner")
+
+    def test_search_expenses_with_group_and_friend_filters(self):
+        g1 = MagicMock()
+        g1.getName.return_value = "Apartment"
+        g1.getId.return_value = 500
+        self.mock_client.getGroups.return_value = [g1]
+
+        f1 = MagicMock()
+        f1.getFirstName.return_value = "Sumeet"
+        f1.getLastName.return_value = "Singh"
+        f1.getId.return_value = 101
+        self.mock_client.getFriends.return_value = [f1]
+
+        self.mock_client.getExpenses.return_value = []
+
+        self.client_wrapper.search_expenses(
+            days=30,
+            query=None,
+            group_name="Apartment",
+            friend_name="Sumeet",
+            limit_per_page=25,
+            max_pages=1,
+        )
+
+        _, kwargs = self.mock_client.getExpenses.call_args
+        self.assertEqual(kwargs["group_id"], 500)
+        self.assertEqual(kwargs["friend_id"], 101)
+        self.assertEqual(kwargs["limit"], 25)
+        self.assertEqual(kwargs["offset"], 0)
+        self.assertTrue(kwargs["visible"])
 
 if __name__ == '__main__':
     unittest.main()

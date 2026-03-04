@@ -23,6 +23,7 @@ flowchart LR
 | `text_command` | Send text → Gemini processes → Splitwise executes |
 | `add_expense` | Add expenses with support for groups, percentages, exclusions, and specific payers |
 | `delete_expense` | Delete an expense by ID |
+| `search_transactions` | Fetch expenses for a recent window (default 90 days) and filter by text/group/friend |
 | `list_friends` | List your Splitwise friends |
 | `configure_splitwise` | Configure API credentials |
 | `login_with_token` | Login with OAuth2 token |

@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from splitwise import Splitwise
 from splitwise.expense import Expense
 from splitwise.user import ExpenseUser
-from typing import List, Optional
+from datetime import datetime, timedelta, timezone
+from typing import Any, List, Optional
 
 load_dotenv()
 
@@ -282,4 +283,102 @@ class SplitwiseClient:
             return True
         else:
             raise Exception(f"Failed to delete expense: {errors.getErrors()}")
+
+    def search_expenses(
+        self,
+        days: int = 90,
+        query: str | None = None,
+        group_name: str | None = None,
+        friend_name: str | None = None,
+        limit_per_page: int = 20,
+        max_pages: int = 10,
+        include_deleted: bool = False,
+    ) -> dict[str, Any]:
+        """
+        Fetch recent expenses from Splitwise and optionally filter by text.
+
+        Strategy:
+        - Pull expenses from API with date/window filters and pagination.
+        - Apply text filtering client-side on common fields.
+        """
+        if not self.client:
+            raise ValueError("Splitwise client not configured. Please use 'configure_splitwise' tool.")
+
+        if days <= 0:
+            raise ValueError("'days' must be greater than 0.")
+        if limit_per_page <= 0:
+            raise ValueError("'limit_per_page' must be greater than 0.")
+        if max_pages <= 0:
+            raise ValueError("'max_pages' must be greater than 0.")
+
+        group_id = None
+        if group_name:
+            group = self.find_group_by_name(group_name)
+            if not group:
+                raise ValueError(f"Group not found: {group_name}")
+            group_id = group.getId()
+
+        friend_id = None
+        if friend_name:
+            friend = self.find_friend_by_name(friend_name)
+            if not friend:
+                raise ValueError(f"Friend not found: {friend_name}")
+            friend_id = friend.getId()
+
+        now = datetime.now(timezone.utc)
+        dated_after = (now - timedelta(days=days)).isoformat()
+        dated_before = now.isoformat()
+
+        fetched_expenses = []
+        for page in range(max_pages):
+            offset = page * limit_per_page
+            batch = self.client.getExpenses(
+                offset=offset,
+                limit=limit_per_page,
+                group_id=group_id,
+                friend_id=friend_id,
+                dated_after=dated_after,
+                dated_before=dated_before,
+                visible=(not include_deleted),
+            )
+            if not batch:
+                break
+            fetched_expenses.extend(batch)
+            if len(batch) < limit_per_page:
+                break
+
+        query_text = (query or "").strip().lower()
+        filtered_expenses = []
+        for expense in fetched_expenses:
+            description = str(getattr(expense, "getDescription", lambda: "")() or "")
+            category = str(getattr(expense, "getCategory", lambda: {})() or "")
+            currency = str(getattr(expense, "getCurrencyCode", lambda: "")() or "")
+            cost = str(getattr(expense, "getCost", lambda: "")() or "")
+
+            haystack = " | ".join([description, category, currency, cost]).lower()
+            if query_text and query_text not in haystack:
+                continue
+
+            filtered_expenses.append(
+                {
+                    "id": str(getattr(expense, "getId", lambda: "")() or ""),
+                    "description": description,
+                    "cost": cost,
+                    "currency": currency,
+                    "date": str(getattr(expense, "getDate", lambda: "")() or ""),
+                    "group_id": str(getattr(expense, "getGroupId", lambda: "")() or ""),
+                    "details": str(getattr(expense, "getDetails", lambda: "")() or ""),
+                }
+            )
+
+        return {
+            "days": days,
+            "query": query or "",
+            "group_name": group_name or "",
+            "friend_name": friend_name or "",
+            "window": {"dated_after": dated_after, "dated_before": dated_before},
+            "fetched_count": len(fetched_expenses),
+            "matched_count": len(filtered_expenses),
+            "expenses": filtered_expenses,
+        }
 
