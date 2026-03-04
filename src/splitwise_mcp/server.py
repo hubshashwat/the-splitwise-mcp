@@ -209,6 +209,69 @@ def delete_expense(expense_id: str) -> str:
     except Exception as e:
         return f"Error deleting expense: {e}"
 
+
+@mcp.tool()
+def search_transactions(
+    days: int = 90,
+    query: str | None = None,
+    group_name: str | None = None,
+    friend_name: str | None = None,
+    limit_per_page: int = 20,
+    max_pages: int = 10,
+    include_deleted: bool = False,
+) -> str:
+    """
+    Search recent Splitwise expenses by fetching a date window then filtering text locally.
+
+    Args:
+        days: Number of days to look back from now (default: 90).
+        query: Optional case-insensitive text to match against description/category/currency/cost.
+        group_name: Optional group name filter (resolved to group ID).
+        friend_name: Optional friend name filter (resolved to friend ID).
+        limit_per_page: API page size to request per call.
+        max_pages: Maximum pages to fetch.
+        include_deleted: If True, include deleted expenses where API supports it.
+    """
+    if not client.client:
+        return "Error: Splitwise client not configured. Use 'configure_splitwise' first."
+
+    try:
+        result = client.search_expenses(
+            days=days,
+            query=query,
+            group_name=group_name,
+            friend_name=friend_name,
+            limit_per_page=limit_per_page,
+            max_pages=max_pages,
+            include_deleted=include_deleted,
+        )
+
+        expenses = result.get("expenses", [])
+        header = (
+            f"Found {result.get('matched_count', 0)} matching expense(s) "
+            f"from {result.get('fetched_count', 0)} fetched "
+            f"in last {result.get('days', days)} day(s)."
+        )
+        if not expenses:
+            return header
+
+        lines = [header]
+        for item in expenses:
+            lines.append(
+                "- [{id}] {description} | {cost} {currency} | {date}".format(
+                    id=item.get("id", ""),
+                    description=item.get("description", ""),
+                    cost=item.get("cost", ""),
+                    currency=item.get("currency", ""),
+                    date=item.get("date", ""),
+                )
+            )
+        return "\n".join(lines)
+    except ValueError as e:
+        return f"Error validation: {e}"
+    except Exception as e:
+        return f"Error searching transactions: {e}"
+
 def main():
     mcp.run()
 
